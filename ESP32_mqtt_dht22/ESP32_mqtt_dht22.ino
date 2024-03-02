@@ -13,7 +13,7 @@ const char *mqtt_broker = "xxxx";//broker web
 const char *topic = "DataforDht22"; 
 const char *mqtt_username = "xxxx";// we create for broker 
 const char *mqtt_password = "xxxx";
-const int mqtt_port = 6688;//port is 8884 in web
+const int mqtt_port = 6688;
 
 
 WiFiClient espClient;
