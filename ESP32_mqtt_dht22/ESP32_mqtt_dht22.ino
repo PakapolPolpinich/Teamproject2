@@ -6,13 +6,13 @@
 #define DHTTYPE DHT22
 
 // WiFi
-const char *ssid = "Belt"; // Enter your Wi-Fi name
-const char *password = "Belt6806";  // Enter Wi-Fi password
+const char *ssid = "xxxx"; // Enter your Wi-Fi name
+const char *password = "xxxx";  // Enter Wi-Fi password
 
-const char *mqtt_broker = "iiot.dynu.com";//broker web
+const char *mqtt_broker = "xxxx";//broker web
 const char *topic = "DataforDht22"; 
-const char *mqtt_username = "mosquitto";// we create for broker 
-const char *mqtt_password = "teamproject";
+const char *mqtt_username = "xxxx";// we create for broker 
+const char *mqtt_password = "xxxx";
 const int mqtt_port = 6688;//port is 8884 in web
 
 
@@ -74,8 +74,8 @@ void setup() {
         }
     }
     dht.begin();
-    xTaskCreatePinnedToCore(ReadSensorTask, "Read Sensor Task", 10000, NULL, 1, NULL,0);
-    xTaskCreatePinnedToCore(MqttPublishTask, "MQTT Publish Task", 10000, NULL, 1, NULL,1);
+    xTaskCreatePinnedToCore(ReadSensorTask, "Read Sensor Task", 10000, NULL, 1, NULL,0);// use core 0
+    xTaskCreatePinnedToCore(MqttPublishTask, "MQTT Publish Task", 10000, NULL, 1, NULL,1);//use core 1
 }
 
 void callback(char *topic, byte *payload, unsigned int length) {
