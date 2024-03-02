@@ -33,7 +33,7 @@ void ReadSensorTask(void *parameter) {
 }
 
 void MqttPublishTask(void *parameter) {
-  char text_humadity[50];
+  char text_humidity[50];
   char text_temapature[50];
   char sentence[50];
     while(1) { 
@@ -41,7 +41,7 @@ void MqttPublishTask(void *parameter) {
         float temparature = lastTemperature;
         dtostrf(humidity, 5, 2, text_humadity);
         dtostrf(temparature, 5, 2, text_temapature);
-        sprintf(sentence, "{\"temp\":\"%s\",\"hum\":\"%s\"}",text_temapature, text_humadity);
+        sprintf(sentence, "{\"temp\":\"%s\",\"hum\":\"%s\"}",text_temapature, text_humidity);
         client.publish(topic,sentence);
         client.loop();
         vTaskDelay(5000 / portTICK_PERIOD_MS); // Delay for 5 seconds
