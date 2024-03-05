@@ -9,12 +9,12 @@
 const char *ssid = "xxxx"; // Enter your Wi-Fi name
 const char *password = "xxxx";  // Enter Wi-Fi password
 
-const char *mqtt_broker = "xxxx";//broker web
-const char *topic = "DataforDht22"; 
-const char *mqtt_username = "xxxx";// we create for broker 
-const char *mqtt_password = "xxxx";
-const int mqtt_port = 6688;
-
+const char *mqtt_broker = "iiot.dynu.com";//broker web
+const char *topic = "65010790"; // name topic
+const char *mqtt_username = "mosquitto";// we create for broker 
+const char *mqtt_password = "teamproject";
+const int mqtt_port = 6688;//port is 8884 in web
+const char *location ="13.7276625, 100.7787031";// location
 
 WiFiClient espClient;
 PubSubClient client(espClient); //create class method is client you can change client to another name 
@@ -33,15 +33,15 @@ void ReadSensorTask(void *parameter) {
 }
 
 void MqttPublishTask(void *parameter) {
-  char text_humidity[50];
+  char text_humadity[50];
   char text_temapature[50];
-  char sentence[50];
+  char sentence[100];
     while(1) { 
         float humidity = lastHumidity;
         float temparature = lastTemperature;
         dtostrf(humidity, 5, 2, text_humadity);
         dtostrf(temparature, 5, 2, text_temapature);
-        sprintf(sentence, "{\"temp\":\"%s\",\"hum\":\"%s\"}",text_temapature, text_humidity);
+        sprintf(sentence, "{\"temp\":\"%s\",\"hum\":\"%s\",\"location\":\"%s\"}",text_temapature, text_humadity,location);
         client.publish(topic,sentence);
         client.loop();
         vTaskDelay(5000 / portTICK_PERIOD_MS); // Delay for 5 seconds
@@ -62,7 +62,7 @@ void setup() {
     client.setServer(mqtt_broker, mqtt_port);//set broker to connect it not have return value
     client.setCallback(callback);//Subscribe -> when recieve data go to function call back
     while (!client.connected()) {
-        String client_id = "esp32-client-"; // name broker it not same who use same broker
+        String client_id = "65010790"; // name broker it not same who use same broker
         client_id += String(WiFi.macAddress());
         Serial.printf("The client %s connects to the public MQTT broker\n", client_id.c_str());
         if (client.connect(client_id.c_str(), mqtt_username, mqtt_password)) {//connect with broker (set name,name mqtt,password) pointer parameter char is not use address it return true when finish
@@ -74,8 +74,8 @@ void setup() {
         }
     }
     dht.begin();
-    xTaskCreatePinnedToCore(ReadSensorTask, "Read Sensor Task", 10000, NULL, 1, NULL,0);// use core 0
-    xTaskCreatePinnedToCore(MqttPublishTask, "MQTT Publish Task", 10000, NULL, 1, NULL,1);//use core 1
+    xTaskCreatePinnedToCore(ReadSensorTask, "Read Sensor Task", 10000, NULL, 1, NULL,0);
+    xTaskCreatePinnedToCore(MqttPublishTask, "MQTT Publish Task", 10000, NULL, 1, NULL,1);
 }
 
 void callback(char *topic, byte *payload, unsigned int length) {
